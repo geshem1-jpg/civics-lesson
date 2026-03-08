@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>אזרחות במבחן המציאות – מבצע שאגת הארי</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans Hebrew', 'Segoe UI', sans-serif;
+    direction: rtl;
+    background: #F5F7FA;
+    min-height: 100vh;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  button { font-family: inherit; cursor: pointer; }
+  button:active { transform: scale(0.97) !important; }
+
+  /* Landing */
+  .landing {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0A1628 0%, #1B3A5C 40%, #2C5F8A 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 2rem; position: relative; overflow: hidden;
+  }
+  .landing-glow-1 {
+    position: absolute; top: -10%; right: -10%;
+    width: 500px; height: 500px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,200,50,0.08) 0%, transparent 70%);
+  }
+  .landing-glow-2 {
+    position: absolute; bottom: -5%; left: -5%;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(100,180,255,0.06) 0%, transparent 70%);
+  }
+  .landing-content {
+    text-align: center; max-width: 700px; z-index: 1;
+    opacity: 0; transform: translateY(30px);
+    animation: slideUp 0.8s cubic-bezier(0.4,0,0.2,1) 0.1s forwards;
+  }
+  .landing-lion { font-size: 4.5rem; margin-bottom: 0.5rem; filter: drop-shadow(0 0 20px rgba(255,200,50,0.3)); }
+  .landing-title {
+    color: #F5D060; font-size: 2.6rem; font-weight: 800;
+    margin-bottom: 0.5rem; letter-spacing: -0.02em;
+    text-shadow: 0 2px 20px rgba(245,208,96,0.3); line-height: 1.3;
+  }
+  .landing-sub { color: #A8C8E8; font-size: 1.3rem; font-weight: 400; margin-bottom: 2.5rem; line-height: 1.6; }
+  .landing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2.5rem; }
+  .landing-card {
+    background: rgba(255,255,255,0.06); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
+    padding: 1rem 1.2rem; display: flex; align-items: center; gap: 0.8rem;
+    opacity: 0; transform: translateY(20px);
+  }
+  .landing-card:nth-child(1) { animation: slideUp 0.6s cubic-bezier(0.4,0,0.2,1) 0.4s forwards; }
+  .landing-card:nth-child(2) { animation: slideUp 0.6s cubic-bezier(0.4,0,0.2,1) 0.5s forwards; }
+  .landing-card:nth-child(3) { animation: slideUp 0.6s cubic-bezier(0.4,0,0.2,1) 0.6s forwards; }
+  .landing-card:nth-child(4) { animation: slideUp 0.6s cubic-bezier(0.4,0,0.2,1) 0.7s forwards; }
+  .landing-card-icon { font-size: 1.8rem; }
+  .landing-card-title { color: #fff; font-weight: 700; font-size: 1rem; }
+  .landing-card-dur { color: #8AB4D6; font-size: 0.8rem; }
+  .start-btn {
+    background: linear-gradient(135deg, #F5D060, #E8A830); color: #1B2838;
+    border: none; border-radius: 16px; padding: 1rem 3rem;
+    font-size: 1.4rem; font-weight: 800;
+    box-shadow: 0 8px 30px rgba(245,208,96,0.3); transition: all 0.3s ease;
+  }
+  .start-btn:hover { transform: scale(1.05); box-shadow: 0 12px 40px rgba(245,208,96,0.4); }
+
+  /* Navbar */
+  .navbar {
+    background: #fff; border-bottom: 2px solid #E8ECF0;
+    padding: 0.6rem 1.5rem; display: flex; align-items: center; gap: 0.6rem;
+    position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    flex-wrap: wrap;
+  }
+  .nav-home { background: none; border: none; font-size: 1.5rem; padding: 0.3rem; }
+  .nav-sep { width: 1px; height: 30px; background: #E0E0E0; margin: 0 0.3rem; }
+  .nav-btn {
+    border-radius: 12px; padding: 0.5rem 1rem; font-size: 0.95rem;
+    display: flex; align-items: center; gap: 0.4rem; transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+  .nav-btn.active { border: none; color: #fff; font-weight: 700; }
+  .nav-btn:not(.active) { background: transparent; color: #555; border: 2px solid #E0E0E0; font-weight: 500; }
+
+  /* Content area */
+  .content { max-width: 850px; margin: 0 auto; padding: 1.5rem; animation: fadeIn 0.4s ease; }
+  .card {
+    background: #fff; border-radius: 20px; padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.06);
+  }
+  .card h2 { font-size: 1.6rem; margin-bottom: 0.5rem; }
+  .card > p { color: #555; font-size: 1.15rem; line-height: 1.6; }
+
+  /* Discussion prompt */
+  .discussion {
+    border-radius: 16px; padding: 1.2rem 1.5rem;
+    display: flex; align-items: flex-start; gap: 0.8rem; margin-top: 1rem;
+  }
+  .discussion-label { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .discussion-text { color: #333; font-size: 1.1rem; line-height: 1.6; }
+
+  /* Activity 1: State */
+  .state-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 1.2rem; }
+  .state-card {
+    border-radius: 20px; padding: 1.5rem; cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+    min-height: 180px; display: flex; flex-direction: column;
+  }
+  .state-card:not(.revealed) { background: #fff; }
+  .state-card:not(.revealed):hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+  .state-card.revealed { color: #fff; }
+  .state-card-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem; }
+  .state-card-icon { font-size: 2rem; }
+  .state-card-title { font-size: 1.2rem; font-weight: 800; }
+  .state-card-hint { margin-top: auto; padding-top: 1rem; font-size: 0.9rem; font-weight: 600; opacity: 0.7; }
+  .state-card-reveal { background: rgba(255,255,255,0.15); border-radius: 12px; padding: 1rem; }
+  .state-card-reveal-label { color: #F5D060; font-weight: 700; font-size: 0.85rem; margin-bottom: 0.3rem; }
+  .state-card-reveal p { color: #fff; font-size: 1.05rem; line-height: 1.6; }
+
+  /* Activity 2: People */
+  .who-badges { display: flex; gap: 1rem; justify-content: center; margin: 1.2rem 0; flex-wrap: wrap; }
+  .who-badge { padding: 0.6rem 1.2rem; border-radius: 30px; font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.4rem; }
+  .statements { display: flex; flex-direction: column; gap: 1rem; }
+  .statement { background: #fff; border-radius: 16px; overflow: hidden; cursor: pointer; transition: all 0.3s ease; }
+  .statement-head { padding: 1.2rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+  .statement-tag { padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; white-space: nowrap; display: flex; align-items: center; gap: 0.3rem; }
+  .statement-text { font-size: 1.1rem; color: #333; font-weight: 600; flex: 1; }
+  .statement-arrow { font-size: 1.2rem; transition: transform 0.3s ease; }
+  .statement-arrow.open { transform: rotate(180deg); }
+  .statement-body { padding: 0 1.5rem 1.2rem; }
+  .statement-explain { border-radius: 12px; padding: 1rem 1.2rem; margin-top: 0.8rem; }
+  .statement-explain p { color: #333; font-size: 1.05rem; line-height: 1.6; }
+
+  /* Activity 3: Knesset */
+  .step-tabs { display: flex; justify-content: center; gap: 0.5rem; margin: 1.2rem 0; flex-wrap: wrap; }
+  .step-tab {
+    border-radius: 14px; padding: 0.6rem 1.2rem; font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  .step-tab.active { color: #fff; font-weight: 700; border: none; }
+  .step-tab:not(.active) { background: #fff; color: #666; border: 2px solid #E0E0E0; font-weight: 500; }
+  .step-content { border-right: 5px solid; transition: all 0.3s ease; }
+  .step-info { border-radius: 14px; padding: 1.2rem; margin-bottom: 1rem; }
+  .step-info-title { color: #333; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .step-info-text { color: #555; font-size: 1.05rem; line-height: 1.6; }
+  .step-question-btn {
+    border: none; border-radius: 12px; padding: 0.8rem 1.5rem;
+    font-size: 1.05rem; font-weight: 700; transition: all 0.3s ease;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .step-question-box {
+    background: #FFF8E1; border: 2px solid #FFD54F; border-radius: 14px;
+    padding: 1.2rem; margin-top: 1rem; animation: fadeIn 0.3s ease;
+  }
+  .step-question-box p { color: #333; font-size: 1.15rem; font-weight: 600; line-height: 1.6; }
+  .step-nav { display: flex; justify-content: space-between; margin-top: 1rem; }
+  .step-nav-btn {
+    border: none; border-radius: 12px; padding: 0.7rem 1.5rem;
+    font-size: 1.05rem; font-weight: 700;
+  }
+
+  /* Activity 4: Rights */
+  .rights-btns { display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center; margin: 1.2rem 0; }
+  .right-btn {
+    background: #fff; border-radius: 16px; padding: 0.8rem 1.3rem;
+    font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;
+    transition: all 0.3s ease; color: #333;
+  }
+  .right-btn:hover { transform: translateY(-2px); }
+  .right-btn-icon { font-size: 1.4rem; }
+  .right-detail { border-right: 5px solid; animation: fadeIn 0.3s ease; }
+  .right-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; }
+  .right-header-icon { font-size: 2.5rem; }
+  .right-header h3 { color: #333; font-size: 1.3rem; }
+  .right-status { padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; }
+  .right-normal { background: #F5F5F5; border-radius: 14px; padding: 1.2rem; margin-bottom: 1rem; }
+  .right-normal-label { font-weight: 700; color: #666; font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .right-normal p { color: #333; font-size: 1.1rem; line-height: 1.6; }
+  .right-reveal-btn {
+    border: none; border-radius: 12px; padding: 0.8rem 1.5rem;
+    font-size: 1.05rem; font-weight: 700; color: #fff;
+    display: flex; align-items: center; gap: 0.5rem; width: 100%; justify-content: center;
+  }
+  .right-wartime { border-radius: 14px; padding: 1.2rem; border-width: 2px; border-style: solid; animation: fadeIn 0.3s ease; }
+  .right-wartime-label { font-weight: 700; color: #666; font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .right-wartime p { color: #333; font-size: 1.1rem; line-height: 1.6; }
+
+  /* Summary */
+  .summary { text-align: center; padding: 3rem 2rem; }
+  .summary-icon { font-size: 4rem; margin-bottom: 1rem; }
+  .summary h2 { color: #1B4965; font-size: 1.8rem; margin-bottom: 1rem; }
+  .summary p { color: #555; font-size: 1.2rem; line-height: 1.8; max-width: 600px; margin: 0 auto 1.5rem; }
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; max-width: 500px; margin: 0 auto 2rem; }
+  .summary-item { border-radius: 14px; padding: 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
+  .summary-item-name { font-weight: 700; }
+
+  /* Next button */
+  .next-area { display: flex; justify-content: center; margin-top: 2rem; padding-bottom: 2rem; }
+  .next-btn {
+    background: linear-gradient(135deg, #F5D060, #E8A830); color: #1B2838;
+    border: none; border-radius: 16px; padding: 1rem 2.5rem;
+    font-size: 1.2rem; font-weight: 800;
+    box-shadow: 0 6px 20px rgba(245,208,96,0.3);
+    display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;
+  }
+  .next-btn:hover { transform: scale(1.05); }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .landing-title { font-size: 1.8rem; }
+    .landing-sub { font-size: 1.1rem; }
+    .landing-grid { grid-template-columns: 1fr; }
+    .state-grid { grid-template-columns: 1fr; }
+    .navbar { padding: 0.5rem 0.8rem; gap: 0.4rem; }
+    .nav-btn { padding: 0.4rem 0.7rem; font-size: 0.85rem; }
+    .content { padding: 1rem; }
+    .card { padding: 1.5rem; }
+    .step-tabs { gap: 0.3rem; }
+    .step-tab { padding: 0.5rem 0.8rem; font-size: 0.9rem; }
+    .summary-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const ACTIVITIES = [
+  { id: "state", title: "מהי מדינה?", icon: "🏛️", color: "#1B4965", lightColor: "#E8F0F5", description: "מרכיבי המדינה במבצע שאגת הארי", duration: "7 דקות" },
+  { id: "people", title: "שלטון העם", icon: "🗳️", color: "#5B2C6F", lightColor: "#F0E6F6", description: "מי מחליט? העם, הממשלה או הכנסת?", duration: "8 דקות" },
+  { id: "knesset", title: "הכנסת בישראל", icon: "📜", color: "#1A5632", lightColor: "#E6F2EB", description: "תפקיד הכנסת בזמן מבצע", duration: "7 דקות" },
+  { id: "rights", title: "זכויות האדם", icon: "⚖️", color: "#8B4513", lightColor: "#F5EDE6", description: "מה קורה לזכויות שלנו בזמן מלחמה?", duration: "8 דקות" },
+];
+
+function LandingScreen({ onStart }) {
+  return (
+    <div className="landing">
+      <div className="landing-glow-1" />
+      <div className="landing-glow-2" />
+      <div className="landing-content">
+        <div className="landing-lion">🦁</div>
+        <h1 className="landing-title">אזרחות במבחן המציאות</h1>
+        <p className="landing-sub">מבצע שאגת הארי והקשר לאזרחות</p>
+        <div className="landing-grid">
+          {ACTIVITIES.map((a) => (
+            <div key={a.id} className="landing-card">
+              <span className="landing-card-icon">{a.icon}</span>
+              <div>
+                <div className="landing-card-title">{a.title}</div>
+                <div className="landing-card-dur">{a.duration}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button className="start-btn" onClick={onStart}>בואו נתחיל! 🚀</button>
+      </div>
+    </div>
+  );
+}
+
+function NavBar({ currentActivity, onSelect, onHome }) {
+  return (
+    <div className="navbar">
+      <button className="nav-home" onClick={onHome}>🦁</button>
+      <div className="nav-sep" />
+      {ACTIVITIES.map((a) => (
+        <button
+          key={a.id}
+          className={`nav-btn ${currentActivity === a.id ? 'active' : ''}`}
+          style={currentActivity === a.id ? { background: a.color } : {}}
+          onClick={() => onSelect(a.id)}
+        >
+          <span>{a.icon}</span>
+          <span>{a.title}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function DiscussionPrompt({ text, color }) {
+  return (
+    <div className="discussion" style={{ background: `${color}10`, border: `2px dashed ${color}40` }}>
+      <span style={{ fontSize: "1.5rem" }}>💬</span>
+      <div>
+        <div className="discussion-label" style={{ color }}>שאלה לדיון</div>
+        <div className="discussion-text">{text}</div>
+      </div>
+    </div>
+  );
+}
+
+// ═══ ACTIVITY 1: מהי מדינה ═══
+function StateActivity() {
+  const color = "#1B4965";
+  const elements = [
+    { title: "טריטוריה (שטח)", icon: "🗺️", definition: "לכל מדינה יש שטח מוגדר עם גבולות", connection: "ישראל הגנה על שטחה מפני טילים מאיראן ומלבנון. חיל האוויר פעל להגן על המרחב האווירי של ישראל." },
+    { title: "אוכלוסייה (אזרחים)", icon: "👥", definition: "במדינה חיים אנשים – האזרחים שלה", connection: "האזרחים נכנסו למרחבים מוגנים. הממשלה פינתה תושבים שבתיהם נפגעו ודאגה לסיוע כספי." },
+    { title: "ריבונות", icon: "🛡️", definition: "המדינה מחליטה לבד על ענייניה ומגינה על עצמה", connection: "ישראל החליטה לצאת למבצע כדי להסיר את האיום הגרעיני של איראן. זו החלטה ריבונית של מדינה." },
+    { title: "שלטון (ממשלה)", icon: "🏛️", definition: "המדינה מנוהלת על ידי ממשלה שמקבלת החלטות", connection: "ראש הממשלה הכריז על המבצע. הקבינט המדיני-ביטחוני אישר את היציאה למבצע. שר הביטחון הכריז על מצב חירום בעורף." },
+  ];
+
+  const [revealed, setRevealed] = useState([false, false, false, false]);
+  const toggle = (i) => setRevealed(prev => prev.map((v, idx) => idx === i ? !v : v));
+
+  return (
+    <div>
+      <div className="card">
+        <h2 style={{ color }}>🏛️ מהי מדינה?</h2>
+        <p>למדנו שלמדינה יש 4 מרכיבים. בואו נראה איך כל מרכיב בא לידי ביטוי במבצע שאגת הארי.</p>
+        <p style={{ color, fontWeight: 600, marginTop: "0.3rem", fontSize: "1rem" }}>👆 לחצו על כל כרטיס כדי לגלות את הקשר למבצע</p>
+      </div>
+      <div className="state-grid">
+        {elements.map((el, i) => (
+          <div key={i}
+            className={`state-card ${revealed[i] ? 'revealed' : ''}`}
+            style={revealed[i]
+              ? { background: `linear-gradient(135deg, ${color}, #2A6F97)`, border: "none", boxShadow: "0 8px 30px rgba(27,73,101,0.25)" }
+              : { border: `2px solid ${color}20`, boxShadow: "0 4px 15px rgba(0,0,0,0.06)" }
+            }
+            onClick={() => toggle(i)}
+          >
+            <div className="state-card-head">
+              <span className="state-card-icon">{el.icon}</span>
+              <span className="state-card-title" style={{ color: revealed[i] ? "#fff" : color }}>{el.title}</span>
+            </div>
+            {!revealed[i] ? (
+              <div>
+                <p style={{ color: "#555", fontSize: "1.05rem", lineHeight: 1.5 }}>{el.definition}</p>
+                <div className="state-card-hint" style={{ color }}>👆 לחצו לגלות את הקשר</div>
+              </div>
+            ) : (
+              <div className="state-card-reveal">
+                <div className="state-card-reveal-label">הקשר למבצע שאגת הארי:</div>
+                <p>{el.connection}</p>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      <DiscussionPrompt text="מה לדעתכם המרכיב הכי חשוב מבין ארבעת מרכיבי המדינה? למה?" color={color} />
+    </div>
+  );
+}
+
+// ═══ ACTIVITY 2: שלטון העם ═══
+function PeopleActivity() {
+  const color = "#5B2C6F";
+  const whoColors = {
+    "ממשלה": { bg: "#F3E5F5", text: "#7B1FA2", icon: "🏛️" },
+    "כנסת": { bg: "#E8F5E9", text: "#2E7D32", icon: "📜" },
+    "אזרחים": { bg: "#E3F2FD", text: "#1565C0", icon: "👥" },
+  };
+  const statements = [
+    { text: "ראש הממשלה הכריז על פתיחת המבצע", who: "ממשלה", explanation: "בישראל, ראש הממשלה והממשלה מחליטים על יציאה למבצע צבאי. ראש הממשלה נתניהו הכריז על מבצע שאגת הארי." },
+    { text: "הקבינט המדיני-ביטחוני אישר את המבצע", who: "ממשלה", explanation: "הקבינט הוא קבוצה מצומצמת של שרים שמקבלת החלטות ביטחוניות. הם אישרו את היציאה למבצע." },
+    { text: "ועדת החוץ והביטחון של הכנסת אישרה את הארכת מצב החירום", who: "כנסת", explanation: "הכנסת מפקחת על הממשלה. ועדת החוץ והביטחון אישרה את הארכת מצב החירום בעורף עד ה-12 במרץ." },
+    { text: "האזרחים נכנסו למרחבים מוגנים ושמרו על ההנחיות", who: "אזרחים", explanation: "האזרחים מילאו את הוראות פיקוד העורף. בדמוקרטיה, האזרחים גם ממלאים אחרי החלטות השלטון בזמן חירום." },
+    { text: "אזרחים ביקרו את ההחלטה שלא לעדכן את כל הקבינט מראש", who: "אזרחים", explanation: "בדמוקרטיה, לאזרחים יש זכות לבקר את הממשלה. היו שטענו שההחלטה על המבצע התקבלה בחוסר שקיפות." },
+  ];
+  const [expandedIndex, setExpandedIndex] = useState(null);
+
+  return (
+    <div>
+      <div className="card">
+        <h2 style={{ color }}>🗳️ שלטון העם</h2>
+        <p>בדמוקרטיה, העם בוחר את השלטון. אבל מי מחליט בפועל? בואו נבדוק מי קיבל כל החלטה במבצע שאגת הארי.</p>
+      </div>
+      <div className="who-badges">
+        {Object.entries(whoColors).map(([who, s]) => (
+          <div key={who} className="who-badge" style={{ background: s.bg, color: s.text }}>
+            <span>{s.icon}</span> {who}
+          </div>
+        ))}
+      </div>
+      <div className="statements">
+        {statements.map((s, i) => {
+          const wc = whoColors[s.who];
+          const isOpen = expandedIndex === i;
+          return (
+            <div key={i} className="statement"
+              style={{ border: `2px solid ${isOpen ? wc.text : "#E8ECF0"}`, boxShadow: isOpen ? `0 6px 20px ${wc.text}20` : "0 2px 8px rgba(0,0,0,0.04)" }}
+              onClick={() => setExpandedIndex(isOpen ? null : i)}
+            >
+              <div className="statement-head">
+                <span className="statement-tag" style={{ background: wc.bg, color: wc.text }}>{wc.icon} {s.who}</span>
+                <span className="statement-text">{s.text}</span>
+                <span className={`statement-arrow ${isOpen ? 'open' : ''}`}>▼</span>
+              </div>
+              {isOpen && (
+                <div className="statement-body">
+                  <div className="statement-explain" style={{ background: wc.bg, borderTop: `1px solid ${wc.text}15` }}>
+                    <p>{s.explanation}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <DiscussionPrompt text="האם לדעתכם ההחלטה לצאת למבצע צריכה להתקבל על ידי ראש הממשלה לבד, על ידי כל הממשלה, או שצריך לשאול גם את האזרחים?" color={color} />
+    </div>
+  );
+}
+
+// ═══ ACTIVITY 3: הכנסת ═══
+function KnessetActivity() {
+  const color = "#1A5632";
+  const steps = [
+    { title: "שלב 1: ההחלטה", icon: "1️⃣", text: "הקבינט המדיני-ביטחוני אישר את המבצע", detail: "ההחלטה התקבלה בקבוצה מצומצמת של שרים. לפי חוק-יסוד: הצבא, צה\"ל נתון למרות הממשלה.", question: "למה לדעתכם ההחלטה התקבלה בקבוצה קטנה ולא בכל הממשלה?" },
+    { title: "שלב 2: הכרזת חירום", icon: "2️⃣", text: "שר הביטחון הכריז על 'מצב מיוחד בעורף'", detail: "ההכרזה על מצב מיוחד בעורף מאפשרת הגבלות על התנועה, סגירת בתי ספר, ואיסור התקהלויות.", question: "אילו הגבלות הרגשתם בחיי היום-יום שלכם בעקבות ההכרזה?" },
+    { title: "שלב 3: הכנסת מפקחת", icon: "3️⃣", text: "ועדת החוץ והביטחון של הכנסת אישרה את הארכת מצב החירום", detail: "הממשלה האריכה את מצב החירום עד 12 במרץ. ועדת החוץ והביטחון של הכנסת אישרה זאת. זו דוגמה לפיקוח של הכנסת על הממשלה.", question: "למה חשוב שהכנסת תאשר את ההארכה ולא רק הממשלה?" },
+    { title: "שלב 4: ביקורת ושקיפות", icon: "4️⃣", text: "עלו שאלות על תהליך קבלת ההחלטות", detail: "המכון הישראלי לדמוקרטיה ואחרים העלו שאלות חשובות: האם הממשלה הפעילה מספיק שקיפות? האם כל השרים ידעו מראש?", question: "למה שקיפות חשובה בדמוקרטיה, גם בזמן מלחמה?" },
+  ];
+  const [activeStep, setActiveStep] = useState(0);
+  const [showQ, setShowQ] = useState(false);
+
+  return (
+    <div>
+      <div className="card">
+        <h2 style={{ color }}>📜 הכנסת בישראל</h2>
+        <p>הכנסת מפקחת על הממשלה – גם בזמן מלחמה. בואו נראה את השלבים שקרו במבצע שאגת הארי.</p>
+      </div>
+      <div className="step-tabs">
+        {steps.map((s, i) => (
+          <button key={i} className={`step-tab ${activeStep === i ? 'active' : ''}`}
+            style={activeStep === i ? { background: color } : {}}
+            onClick={() => { setActiveStep(i); setShowQ(false); }}
+          >{s.icon} {s.title}</button>
+        ))}
+      </div>
+      <div className="card step-content" style={{ borderRightColor: color }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "1rem" }}>
+          <span style={{ fontSize: "2rem" }}>{steps[activeStep].icon}</span>
+          <h3 style={{ color, fontSize: "1.3rem" }}>{steps[activeStep].title}</h3>
+        </div>
+        <div className="step-info" style={{ background: "#F0F7F3" }}>
+          <div className="step-info-title">{steps[activeStep].text}</div>
+          <div className="step-info-text">{steps[activeStep].detail}</div>
+        </div>
+        <button className="step-question-btn"
+          style={{ background: showQ ? color : `${color}15`, color: showQ ? "#fff" : color }}
+          onClick={() => setShowQ(!showQ)}
+        >💬 {showQ ? "הסתר שאלה" : "הצג שאלה לדיון"}</button>
+        {showQ && (
+          <div className="step-question-box">
+            <p>🤔 {steps[activeStep].question}</p>
+          </div>
+        )}
+      </div>
+      <div className="step-nav">
+        <button className="step-nav-btn"
+          style={{ background: activeStep === 0 ? "#E0E0E0" : color, color: activeStep === 0 ? "#999" : "#fff" }}
+          disabled={activeStep === 0}
+          onClick={() => { setActiveStep(activeStep - 1); setShowQ(false); }}
+        >→ שלב קודם</button>
+        <button className="step-nav-btn"
+          style={{ background: activeStep === steps.length - 1 ? "#E0E0E0" : color, color: activeStep === steps.length - 1 ? "#999" : "#fff" }}
+          disabled={activeStep === steps.length - 1}
+          onClick={() => { setActiveStep(activeStep + 1); setShowQ(false); }}
+        >שלב הבא ←</button>
+      </div>
+    </div>
+  );
+}
+
+// ═══ ACTIVITY 4: זכויות האדם ═══
+function RightsActivity() {
+  const color = "#8B4513";
+  const rights = [
+    { name: "חופש התנועה", icon: "🚶", normal: "כל אדם חופשי ללכת לכל מקום שהוא רוצה", wartime: "במצב חירום, פיקוד העורף הגביל תנועה. אזרחים התבקשו להישאר ליד מרחבים מוגנים.", affected: true },
+    { name: "הזכות לחינוך", icon: "📚", normal: "לכל ילד יש זכות ללמוד בבית הספר", wartime: "בתי הספר נסגרו במצב חירום. הלמידה עברה למרחוק דרך גוגל מיט – בדיוק כמו עכשיו!", affected: true },
+    { name: "הזכות לעבודה", icon: "💼", normal: "לכל אדם יש זכות לעבוד ולהתפרנס", wartime: "רק עובדים במשק החיוני הורשו להגיע לעבודה. שאר העובדים נשארו בבית.", affected: true },
+    { name: "הזכות לחיים ולביטחון", icon: "❤️", normal: "לכל אדם יש זכות לחיים ולביטחון אישי", wartime: "זו בדיוק הזכות שהמבצע נועד להגן עליה! מטרת המבצע היא להסיר את האיום על חיי האזרחים.", affected: false },
+    { name: "חופש הביטוי", icon: "📢", normal: "כל אדם חופשי לבטא את דעתו", wartime: "גם בזמן מלחמה, אזרחים וגופים כמו המכון לדמוקרטיה המשיכו להעלות ביקורת על תהליך קבלת ההחלטות.", affected: false },
+  ];
+  const [sel, setSel] = useState(null);
+  const [showWar, setShowWar] = useState(false);
+
+  return (
+    <div>
+      <div className="card">
+        <h2 style={{ color }}>⚖️ זכויות האדם</h2>
+        <p>בזמן מלחמה, חלק מהזכויות שלנו מוגבלות. בואו נבדוק מה קרה לזכויות שלנו במבצע שאגת הארי.</p>
+        <p style={{ color, fontWeight: 600, marginTop: "0.3rem", fontSize: "1rem" }}>👆 בחרו זכות כדי לראות מה קורה לה בזמן רגיל ובזמן מלחמה</p>
+      </div>
+      <div className="rights-btns">
+        {rights.map((r, i) => (
+          <button key={i} className="right-btn"
+            style={{
+              background: sel === i ? (r.affected ? "#FFEBEE" : "#E8F5E9") : "#fff",
+              border: `2px solid ${sel === i ? (r.affected ? "#EF5350" : "#4CAF50") : "#E0E0E0"}`,
+              fontWeight: sel === i ? 700 : 500,
+            }}
+            onClick={() => { setSel(i); setShowWar(false); }}
+          >
+            <span className="right-btn-icon">{r.icon}</span> {r.name}
+          </button>
+        ))}
+      </div>
+      {sel !== null && (
+        <div className="card right-detail" style={{ borderRightColor: rights[sel].affected ? "#EF5350" : "#4CAF50" }}>
+          <div className="right-header">
+            <span className="right-header-icon">{rights[sel].icon}</span>
+            <div>
+              <h3>{rights[sel].name}</h3>
+              <span className="right-status" style={{
+                background: rights[sel].affected ? "#FFEBEE" : "#E8F5E9",
+                color: rights[sel].affected ? "#C62828" : "#2E7D32",
+              }}>
+                {rights[sel].affected ? "🔴 הוגבלה בזמן המבצע" : "🟢 לא הוגבלה"}
+              </span>
+            </div>
+          </div>
+          <div className="right-normal">
+            <div className="right-normal-label">☀️ בזמן רגיל:</div>
+            <p>{rights[sel].normal}</p>
+          </div>
+          {!showWar ? (
+            <button className="right-reveal-btn" style={{ background: color }} onClick={() => setShowWar(true)}>
+              🔍 מה קרה בזמן המבצע?
+            </button>
+          ) : (
+            <div className="right-wartime" style={{
+              background: rights[sel].affected ? "#FFF3E0" : "#E8F5E9",
+              borderColor: rights[sel].affected ? "#FF9800" : "#4CAF50",
+            }}>
+              <div className="right-wartime-label">⚡ בזמן מבצע שאגת הארי:</div>
+              <p>{rights[sel].wartime}</p>
+            </div>
+          )}
+        </div>
+      )}
+      <DiscussionPrompt text="האם לדעתכם מותר למדינה להגביל את הזכויות שלנו בזמן מלחמה? באילו תנאים?" color={color} />
+    </div>
+  );
+}
+
+function SummaryScreen({ onRestart }) {
+  return (
+    <div className="card summary">
+      <div className="summary-icon">🎓</div>
+      <h2>כל הכבוד!</h2>
+      <p>סיימנו את כל הפעילויות! ראינו איך מבצע שאגת הארי מחובר לנושאים שלמדנו באזרחות: מרכיבי המדינה, שלטון העם, תפקיד הכנסת, וזכויות האדם.</p>
+      <div className="summary-grid">
+        {ACTIVITIES.map(a => (
+          <div key={a.id} className="summary-item" style={{ background: a.lightColor }}>
+            <span style={{ fontSize: "1.5rem" }}>{a.icon}</span>
+            <span className="summary-item-name" style={{ color: a.color }}>{a.title}</span>
+            <span style={{ marginRight: "auto" }}>✅</span>
+          </div>
+        ))}
+      </div>
+      <button className="start-btn" onClick={onRestart}>🔄 חזרה להתחלה</button>
+    </div>
+  );
+}
+
+// ═══ MAIN APP ═══
+function App() {
+  const [screen, setScreen] = useState("landing");
+  const [currentActivity, setCurrentActivity] = useState("state");
+
+  const handleStart = () => { setScreen("lesson"); setCurrentActivity("state"); };
+  const currentIndex = ACTIVITIES.findIndex(a => a.id === currentActivity);
+
+  const goNext = () => {
+    if (currentIndex < ACTIVITIES.length - 1) setCurrentActivity(ACTIVITIES[currentIndex + 1].id);
+    else setCurrentActivity("summary");
+  };
+
+  const renderActivity = () => {
+    switch (currentActivity) {
+      case "state": return <StateActivity />;
+      case "people": return <PeopleActivity />;
+      case "knesset": return <KnessetActivity />;
+      case "rights": return <RightsActivity />;
+      case "summary": return <SummaryScreen onRestart={() => setScreen("landing")} />;
+      default: return <StateActivity />;
+    }
+  };
+
+  if (screen === "landing") return <LandingScreen onStart={handleStart} />;
+
+  return (
+    <div>
+      <NavBar currentActivity={currentActivity} onSelect={setCurrentActivity} onHome={() => setScreen("landing")} />
+      <div className="content" key={currentActivity}>
+        {renderActivity()}
+        {currentActivity !== "summary" && (
+          <div className="next-area">
+            <button className="next-btn" onClick={goNext}>
+              {currentIndex < ACTIVITIES.length - 1 ? "לפעילות הבאה ←" : "סיום 🎓"}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app')).render(<App />);
+</script>
+</body>
+</html>
